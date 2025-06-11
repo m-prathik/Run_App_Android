@@ -23,9 +23,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Run_App.ui.theme.Prathik_Demo_ComposeTheme
+import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun LoginScreen() {
@@ -33,6 +36,9 @@ fun LoginScreen() {
 
     val firstRequester = remember{FocusRequester()}
     val secondRequester = remember{FocusRequester()}
+    var isPasswordFieldEmpty by remember{ mutableStateOf(false)}
+    var passwordVisible by remember{mutableStateOf(false)}
+    val iconColor = if(isSystemInDarkTheme()) Color.White else Color.Black
 
     var email by remember {
         mutableStateOf("")
@@ -99,7 +105,11 @@ fun LoginScreen() {
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { password = it
+                                    if(isPasswordFieldEmpty && it.isBlank()) {
+                                        isPasswordFieldEmpty = false;
+                                    }
+                                },
                 singleLine = true,
                 modifier = Modifier.focusRequester(secondRequester),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -109,12 +119,29 @@ fun LoginScreen() {
                 ),
                 label = { Text(text = "Password",color = Color.Gray) },
                 textStyle = TextStyle(color = Color.White, fontWeight = FontWeight.Bold),
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible)  VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val icon = if(passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                    val description = if(passwordVisible) "Hide Password" else "Show Password"
+                    IconButton(onClick = {passwordVisible = !passwordVisible}) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = description,
+                            tint = iconColor
+                        )
+                    }
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Password
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
+                        // add code to check for blank field and make field red
+                        isPasswordFieldEmpty = password.isEmpty();
+                        if(isPasswordFieldEmpty) {
+
+                        }
                         focusManager.clearFocus()
                     }
                 )
