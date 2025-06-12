@@ -1,14 +1,36 @@
-package com.example.Run_App
+package com.example.Run_App.login
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -20,18 +42,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.icons.Icons
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Run_App.ui.login.LoginViewModel
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
     val focusManager = LocalFocusManager.current
 
     val firstRequester = remember{FocusRequester()}
@@ -39,7 +59,6 @@ fun LoginScreen() {
     var isPasswordFieldEmpty by remember{ mutableStateOf(false)}
     var passwordVisible by remember{mutableStateOf(false)}
     val iconColor = if(isSystemInDarkTheme()) Color.White else Color.Black
-
     var email by remember {
         mutableStateOf("")
     }
@@ -47,10 +66,12 @@ fun LoginScreen() {
     var password by remember {
         mutableStateOf("")
     }
+    val loginResult by viewModel.loginResult.observeAsState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .background(MaterialTheme.colors.background)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
                         focusManager.clearFocus()
@@ -62,7 +83,7 @@ fun LoginScreen() {
         ) {
             Text(
                 text = "Welcome to Run App",
-                color = Color.Gray,
+                color = MaterialTheme.colors.primary,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Monospace
@@ -71,7 +92,7 @@ fun LoginScreen() {
 
             Text(
                 text = "Please Login",
-                color = Color.Gray,
+                color = MaterialTheme.colors.primary,
                 fontSize = 20.sp,
                 fontFamily = FontFamily.Monospace
 
@@ -149,7 +170,9 @@ fun LoginScreen() {
             Spacer(modifier = Modifier.height(20.dp))
 
             // Login Button
-            Button(onClick = { /*TODO*/ },
+            Button(onClick = {
+                viewModel.login(email, password)
+            },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.DarkGray
                     ),
@@ -158,6 +181,13 @@ fun LoginScreen() {
                     text = "Login",
                     color = Color.LightGray,
                 )
+            }
+
+            loginResult?.let { result ->
+                when {
+                    result.isSuccess ->Text("Token:generated")
+                    result.isFailure ->Text("Login Failed:${result.exceptionOrNull()?.message}")
+                }
             }
 
             
