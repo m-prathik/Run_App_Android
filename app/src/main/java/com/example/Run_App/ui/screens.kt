@@ -1,0 +1,22 @@
+package com.example.Run_App.ui
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+
+@Composable
+fun QuickRunScreen(navController: NavController) {
+    Text("QuickRunScreen", modifier = Modifier.fillMaxSize())
+}
+
+@Composable
+fun QuickGuidedRunScreen(navController: NavController) {
+    Text("QuickGuidedRunScreen", modifier = Modifier.fillMaxSize())
+}
+
+@Composable
+fun QuickSettingsScreen(navController: NavController) {
+    Text("QuickSettingsScreen", modifier = Modifier.fillMaxSize())
+}

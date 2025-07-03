@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -48,10 +49,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.Run_App.Navigation.Screen
 import com.example.Run_App.ui.login.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = viewModel()) {
     val focusManager = LocalFocusManager.current
 
     val firstRequester = remember{FocusRequester()}
@@ -185,8 +190,21 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
 
             loginResult?.let { result ->
                 when {
-                    result.isSuccess ->Text("Token:generated")
-                    result.isFailure ->Text("Login Failed:${result.exceptionOrNull()?.message}")
+                    result.isSuccess -> {
+                        LaunchedEffect(Unit) {
+                            navController.navigate(Screen.QuickRun.route) {
+                                popUpTo(Screen.Home.route) {inclusive = true}
+                            }
+                        }
+                    }
+                    //result.isFailure ->Text("Login Failed:${result.exceptionOrNull()?.message}")
+                    result.isFailure -> {
+                        LaunchedEffect(Unit) {
+                            navController.navigate(Screen.GuidedRun.route) {
+                                popUpTo(Screen.Home.route) {inclusive = true}
+                            }
+                        }
+                    }
                 }
             }
 
