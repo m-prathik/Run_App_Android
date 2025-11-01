@@ -133,7 +133,7 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it
                                     if(isPasswordFieldEmpty && it.isBlank()) {
-                                        isPasswordFieldEmpty = false;
+                                        isPasswordFieldEmpty = false
                                     }
                                 },
                 singleLine = true,
@@ -164,7 +164,7 @@ fun LoginScreen(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         // add code to check for blank field and make field red
-                        isPasswordFieldEmpty = password.isEmpty();
+                        isPasswordFieldEmpty = password.isEmpty()
                         if(isPasswordFieldEmpty) {
 
                         }
@@ -197,14 +197,14 @@ fun LoginScreen(
                             }
                         }
                     }
-                    //result.isFailure ->Text("Login Failed:${result.exceptionOrNull()?.message}")
-                    result.isFailure -> {
-                        LaunchedEffect(Unit) {
-                            navController.navigate(Screen.GuidedRun.route) {
-                                popUpTo(Screen.Home.route) {inclusive = true}
-                            }
-                        }
-                    }
+                    result.isFailure ->Text("Login Failed:${result.exceptionOrNull()?.message}")
+//                    result.isFailure -> {
+//                        LaunchedEffect(Unit) {
+//                            navController.navigate(Screen.GuidedRun.route) {
+//                                popUpTo(Screen.Home.route) {inclusive = true}
+//                            }
+//                        }
+//                    }
                 }
             }
 

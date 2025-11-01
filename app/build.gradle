@@ -51,6 +51,7 @@ android {
 dependencies {
 // Compose BOM
     implementation platform("androidx.compose:compose-bom:2024.05.00")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
 
 // Jetpack Compose Core
     implementation "androidx.compose.ui:ui"
@@ -92,6 +93,17 @@ dependencies {
     // navigation dependencies
     implementation "androidx.navigation:navigation-compose:2.7.7"
 
+    // google play service for location
+    implementation "com.google.android.gms:play-services-location:21.3.0"
+
+    // glide for image loading
+    implementation "com.github.bumptech.glide:glide:4.15.1"
+
+    // landscapist glide integration (jetpack compose wrapper for glide
+    implementation "com.github.skydoves:landscapist-glide:2.2.12"
+
+    // adding mapbox sdk
+    implementation "com.mapbox.maps:android:11.6.0"
 
 
 

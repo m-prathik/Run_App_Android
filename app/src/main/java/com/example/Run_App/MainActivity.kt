@@ -15,10 +15,14 @@ import androidx.compose.ui.unit.sp
 import com.example.Run_App.Navigation.Navigation
 import com.example.Run_App.login.LoginScreen
 import com.example.Run_App.ui.theme.App_Theme
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class MainActivity : ComponentActivity() {
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         setContent {
             // calling login screen on screen startup
             App_Theme {
@@ -26,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Navigation()
+                    Navigation(fusedLocationProviderClient)
                 }
             }
         }
