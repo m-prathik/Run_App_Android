@@ -1,14 +1,24 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+def localProps = new Properties()
+def localFile = rootProject.file("local.properties")
+if (localFile.exists()) {
+    localProps.load(new FileInputStream(localFile))
 }
 
 android {
-    namespace 'com.prathik.run_app'
+    namespace 'com.example.Run_App'
     compileSdk 34
+    buildFeatures {
+        buildConfig true
+    }
 
     defaultConfig {
-        applicationId "com.example.prathik_demo_compose"
+        applicationId "com.example.Run_App"
         minSdk 21
         targetSdk 34
         versionCode 1
@@ -18,6 +28,11 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+            buildConfigField(
+                    "String",
+                    "MAPBOX_TOKEN",
+                    "\"${localProps.getProperty("MAPBOX_TOKEN") ?: ""}\""
+            )
     }
 
     buildTypes {
@@ -36,6 +51,7 @@ android {
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
@@ -104,6 +120,11 @@ dependencies {
 
     // adding mapbox sdk
     implementation "com.mapbox.maps:android:11.6.0"
+
+    implementation "com.google.dagger:hilt-android:2.52"
+    kapt "com.google.dagger:hilt-android-compiler:2.52"
+
+    implementation "androidx.hilt:hilt-navigation-compose:1.2.0"
 
 
 

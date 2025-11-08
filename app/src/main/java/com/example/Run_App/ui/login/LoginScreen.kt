@@ -192,7 +192,7 @@ fun LoginScreen(
                 when {
                     result.isSuccess -> {
                         LaunchedEffect(Unit) {
-                            navController.navigate(Screen.QuickRun.route) {
+                            navController.navigate(Screen.Main.route) {
                                 popUpTo(Screen.Home.route) {inclusive = true}
                             }
                         }
