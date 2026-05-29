@@ -72,20 +72,20 @@ fun LoginScreen(
         mutableStateOf("")
     }
     val loginResult by viewModel.loginResult.observeAsState()
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .background(MaterialTheme.colors.background)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    }
-                    )
-                },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(MaterialTheme.colors.background)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                }
+                )
+            },
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
             Text(
                 text = "Welcome to Run App",
                 color = MaterialTheme.colors.primary,

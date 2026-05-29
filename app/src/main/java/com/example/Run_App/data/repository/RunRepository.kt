@@ -116,4 +116,10 @@ class RunRepository @Inject constructor(
         val zoom = 3.72
         return "https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/$lon,$lat,$zoom,0/800x800@2x?access_token=$mapboxToken"
     }
+    fun stopLocationTracking() {
+
+    }
+    fun startLocationTracking() {
+
+    }
 }

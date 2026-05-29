@@ -11,9 +11,24 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -24,10 +39,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.Run_App.ui.run.quickRun.screens.ActiveRunScreen
+import com.example.Run_App.ui.run.quickRun.screens.CountdownScreen
+import com.example.Run_App.ui.run.quickRun.screens.PausedRunScreen
+import com.example.Run_App.ui.run.quickRun.screens.PostRunScreen
+import com.example.Run_App.ui.run.quickRun.screens.PreRunScreen
+import com.example.Run_App.ui.run.quickRun.state.RunState
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -90,21 +116,43 @@ fun quickRunScreen (
             viewModel.checkGpsEnabled(activity, gpsResolutionLauncher, mapboxToken)
         }
     }
+    when (uiState.runState) {
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        if (uiState.isLoading) {
-
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
-        } else {
-            GlideImage(
-                imageModel = {uiState.mapUrl},
-                modifier = Modifier.fillMaxSize()
+        RunState.PRE_RUN ->
+            PreRunScreen(
+                mapUrl = uiState.mapUrl,
+                isLoading = uiState.isLoading,
+                onRunClick = viewModel::startCountDown
             )
 
-        }
+        RunState.COUNTDOWN ->
+            CountdownScreen(uiState.countDown)
+
+        RunState.RUNNING ->
+            ActiveRunScreen(
+                uiState = uiState,
+                onPause = viewModel::pauseRun,
+                onStop = viewModel::stopRun
+            )
+
+        RunState.PAUSED ->
+            PausedRunScreen(
+                onResume = viewModel::resumeRun,
+                onStop = viewModel::stopRun
+            )
+
+        RunState.POST_RUN ->
+            PostRunScreen(uiState)
     }
+}
+private fun formatElapsedTime(seconds: Long): String {
+
+    val minutes = seconds / 60
+    val remainingSeconds = seconds % 60
+
+    return String.format(
+        "%02d:%02d",
+        minutes,
+        remainingSeconds
+    )
 }
