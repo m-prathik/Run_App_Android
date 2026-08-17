@@ -2,11 +2,14 @@ package com.example.Run_App.ui.main
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -28,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.Run_App.BuildConfig
@@ -45,11 +49,10 @@ fun MainScreen(navController: NavHostController, fusedLocationProviderClient: Fu
     ModalDrawer(
         drawerState = drawerState,
         drawerContent = {
-            DrawerMenu(onItemSelected = {
-                screenName ->
+            DrawerMenu(onItemSelected = { screenName ->
                 selectedScreen = screenName
                 scope.launch { drawerState.close() }
-            }
+                }
             )
         }
     ) {

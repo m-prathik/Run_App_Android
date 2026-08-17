@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DrawerState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,7 +34,7 @@ fun DrawerMenu(onItemSelected: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF222222))
+            .background(MaterialTheme.colors.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {

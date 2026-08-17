@@ -91,10 +91,9 @@ class QuickRunViewModel @Inject constructor(
         Log.d("viewModel", "inside countdown function");
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
-                runState = RunState.COUNTDOWN,
-                countDown = 3
+                runState = RunState.COUNTDOWN
             )
-            for (i in 3 downTo 1) {
+            for (i in _uiState.value.countDown downTo 1) {
                 _uiState.value = _uiState.value.copy(countDown = i);
                 delay(1000)
             }
@@ -173,6 +172,26 @@ class QuickRunViewModel @Inject constructor(
 
         _uiState.value = _uiState.value.copy(
             runState = RunState.POST_RUN
+        )
+    }
+    fun saveRun(){
+        //todo write code to save run in device / or send to backend
+        viewModelScope.launch {
+            resetRun()
+        }
+    }
+    fun discardRun() {
+        viewModelScope.launch {
+            resetRun()
+        }
+    }
+    private fun resetRun() {
+        timerJob?.cancel();
+        _uiState.value = QuickRunUiState(
+            mapUrl = repository.defaultMapUrl(),
+            gpsEnabled = _uiState.value.gpsEnabled,
+            hasPermission = _uiState.value.hasPermission,
+            gpsRequested = _uiState.value.gpsRequested
         )
     }
 }

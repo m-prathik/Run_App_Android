@@ -19,14 +19,14 @@ fun CountdownScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Red),
+            .fillMaxSize(),
+//            .background(Color.Red),
         contentAlignment = Alignment.Center
     ) {
 
         Text(
             text = countDown.toString(),
-            color = Color.White,
+            color = Color.Red,
             fontSize = 150.sp,
             fontWeight = FontWeight.Bold,
             fontStyle = FontStyle.Italic
