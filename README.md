@@ -20,20 +20,33 @@ An Android running application built with **Kotlin** and **Jetpack Compose**. Th
 
 ## Screenshots
 
-### Login
+<table>
+  <tr>
+    <td align="center">
+      <img src="screenshots/Login.png" width="300"/>
+      <br/>
+      <b>Login</b>
+    </td>
+    <td align="center">
+      <img src="screenshots/QuickRun.png" width="300"/>
+      <br/>
+      <b>Quick Run</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="screenshots/Running.png" width="300"/>
+      <br/>
+      <b>Running</b>
+    </td>
+    <td align="center">
+      <img src="screenshots/PostRun.png" width="300"/>
+      <br/>
+      <b>Post Run</b>
+    </td>
+  </tr>
+</table>
 
-![Login Screen](screenshots/Login.png)
-
-### Quick Run
-
-![Quick Run Screen](screenshots/QuickRun.png)
-
-### Active Run
-
-![Active Run Screen](screenshots/Running.png)
-
-### Post Run
-![Post Run Screen](screenshots/PostRun.png)
 ## Architecture
 
 The application follows an MVVM-style architecture:
