@@ -71,7 +71,7 @@ fun MainScreen(navController: NavHostController, fusedLocationProviderClient: Fu
                     }
                 )
             },
-        ) {paddingValues ->
+        ) { paddingValues ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

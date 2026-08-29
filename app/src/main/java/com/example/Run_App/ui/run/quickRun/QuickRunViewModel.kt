@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Run_App.BuildConfig
 import com.example.Run_App.data.RetrofitClient
+import com.example.Run_App.data.domain.RunMetricsCalculator
 import com.example.Run_App.data.model.NewRunRequest
 import com.example.Run_App.data.model.QuickRunUiState
 import com.example.Run_App.data.repository.RunRepository
@@ -23,13 +24,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuickRunViewModel @Inject constructor(
-    private val repository : RunRepository
+    private val repository : RunRepository,
     ) : ViewModel() {
 
+    private val metricsCalculator = RunMetricsCalculator()
     private var timerJob: Job? = null
-
     private val _uiState: MutableStateFlow<QuickRunUiState> = MutableStateFlow(QuickRunUiState())
     val uiState : StateFlow<QuickRunUiState> = _uiState
+    init {
+        Log.d("Metrics", "calculator created = $metricsCalculator")
+        viewModelScope.launch {
+            repository.locationPoints.collect {
+                updateMetrics()
+            }
+        }
+    }
 
     fun onPermissionResult(granted : Boolean) {
         _uiState.value = _uiState.value.copy(hasPermission = granted)
@@ -126,18 +135,18 @@ class QuickRunViewModel @Inject constructor(
         viewModelScope.launch {
 
             // Backend call
-            try {
-                val response = RetrofitClient.api.createRun(NewRunRequest("temp"))
-                _uiState.value = _uiState.value.copy(
-                   runId = response.runId
-                )
-            } catch (e : Exception) {
-            }
+//            try {
+//                val response = RetrofitClient.api.createRun(NewRunRequest("temp"))
+//                _uiState.value = _uiState.value.copy(
+//                   runId = response.runId
+//                )
+//            } catch (e : Exception) {
+//            }
 //            val runId = repository.createRun()
 
             // Start timer
            // startTimer()
-
+            repository.startLocationTracking()
             // Start GPS updates
             //startTracking()
         }
@@ -187,11 +196,26 @@ class QuickRunViewModel @Inject constructor(
     }
     private fun resetRun() {
         timerJob?.cancel();
+        repository.clearCurrentRunPoints()
         _uiState.value = QuickRunUiState(
             mapUrl = repository.defaultMapUrl(),
             gpsEnabled = _uiState.value.gpsEnabled,
             hasPermission = _uiState.value.hasPermission,
             gpsRequested = _uiState.value.gpsRequested
+        )
+    }
+
+    private fun updateMetrics() {
+        Log.d(
+            "Metrics",
+            "calculator = $metricsCalculator"
+        )
+        val points = repository.getCurrentRunPoints()
+        val metrics = metricsCalculator.calculate(points)
+
+        _uiState.value = _uiState.value.copy(
+            distanceMeters = metrics.distanceMeters,
+            averagePace = metrics.averagePace
         )
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Run_App.data.model.QuickRunUiState
 import com.example.Run_App.ui.run.quickRun.util.formatElapsedTime
+import com.example.Run_App.ui.run.quickRun.util.formatPace
 
 @Composable
 fun PostRunScreen(
@@ -57,7 +58,7 @@ fun PostRunScreen(
 
         Metric(
             "Average Pace",
-            uiState.averagePace.toString()
+            formatPace(uiState.averagePace)
         )
         Button(
             onClick = onSaveRun,

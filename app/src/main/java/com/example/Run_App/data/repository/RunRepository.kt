@@ -3,6 +3,7 @@ package com.example.Run_App.data.repository
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.util.Log
@@ -12,19 +13,47 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import com.example.Run_App.BuildConfig
+import com.example.Run_App.data.model.LocationPoint
+import com.example.Run_App.services.LocationTrackingService
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class RunRepository @Inject constructor(
-    private val fusedLocationClient: FusedLocationProviderClient
+    private val fusedLocationClient: FusedLocationProviderClient,
+    @ApplicationContext private val context : Context
 ){
+
+    private val currentRunPoints = MutableStateFlow<List<LocationPoint>>(emptyList())
+
+    fun addLocationPoint(location : LocationPoint) {
+        currentRunPoints.update { points ->
+            points + location
+        }
+        Log.d(
+            "LocationService",
+            "Location: ${location.latitude} , ${location.longitude}"
+        )
+    }
+
+    fun getCurrentRunPoints() : List<LocationPoint> {
+        return currentRunPoints.value
+    }
+    fun clearCurrentRunPoints() {
+        currentRunPoints.value = emptyList()
+    }
+
+    val locationPoints : StateFlow<List<LocationPoint>>get() = currentRunPoints
     fun checkLocationEnabled(
         context: Context,
         launcher : ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>,
@@ -117,9 +146,26 @@ class RunRepository @Inject constructor(
         return "https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/$lon,$lat,$zoom,0/800x800@2x?access_token=$mapboxToken"
     }
     fun stopLocationTracking() {
-
+        val intent = Intent(
+            context,
+            LocationTrackingService::class.java
+        ).apply {
+            action = LocationTrackingService.ACTION_STOP
+        }
+        context.startService(intent)
     }
     fun startLocationTracking() {
+        val intent = Intent(
+            context,
+            LocationTrackingService::class.java
+        ).apply {
+            action = LocationTrackingService.ACTION_START
+        }
 
+        Log.d("LocationService", "staring location tracking from runRepository");
+        ContextCompat.startForegroundService(
+            context,
+            intent
+        )
     }
 }
